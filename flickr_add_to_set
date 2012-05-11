@@ -1,0 +1,75 @@
+#!/usr/bin/perl
+
+# made by Angelo "pallotron" Failla - <pallotron@freaknet.org>
+#
+# blog: http://www.vitadiunsysadmin.net
+# site: http://www.pallotron.net
+
+
+# get your own key and secret from http://www.flickr.com/services/api/key.gne
+my $key = 'put here your key';
+my $secret = 'put here your secret';
+my $auth_token='put here your auth token';
+my $photoset_id;
+my $photo_id;
+
+############## DO NOT MODIFY LINES BELOW!!!! #####################
+
+use strict;
+use warnings;
+
+sub usage {
+
+    print <<EOF;
+usage: flickr_add_to_set <photoset_id> <photo_id>
+
+you can grab the photoset_id and photo_id taking the
+numbericnumber from the url on your browser, ie:
+
+http://www.flickr.com/photos/pallotron/sets/72157608471170888/ 
+http://www.flickr.com/photos/pallotron/2924734809/in/set-72157608471170888/
+http://www.flickr.com/photos/pallotron/2924734809
+
+in this case:
+
+72157608471170888 is the photoset id
+2924734809 is the photo id.
+
+EOF
+
+    exit 1;
+}
+
+if($ARGV[0] ne '') {
+    $photoset_id=$ARGV[0];
+} else {
+    usage();
+}
+
+if($ARGV[1] ne '') {
+   $photo_id=$ARGV[1];
+} else {
+    usage();
+}
+
+use Flickr::API;
+use Flickr::API::Request;
+
+my $api = new Flickr::API({'key' => $key, 'secret' => $secret});
+
+print "Adding photo $photo_id to set $photoset_id...\n";
+my $request = new Flickr::API::Request({ 'method' => 'flickr.photosets.addPhoto', 
+        'args' => {
+            'photoset_id' => $photoset_id,
+            'photo_id' => $photo_id,
+            'auth_token' => $auth_token,
+        }, });
+
+my $response = $api->execute_request($request);
+
+print "Success: $response->{success}\n";
+if(! $response->{success}) {
+    print "Error Code: $response->{error_code}\n";
+    print "Error Message: $response->{error_message}\n";
+}
+print "\n";
