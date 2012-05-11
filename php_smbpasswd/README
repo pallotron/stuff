@@ -1,0 +1,29 @@
+This is a web interface that allows an user of a Samba Domain to change his/her
+password. It is very useful if you are running a NT domain without using LDAP
+as back-end for the accounts.
+The project is divided in two parts: a daemon written in C: it opens a UNIX
+socket inside the filesystem listening for connections coming from a client
+(in this project the client is the PHP web interface).
+
+The daemon needs to be setuid'ed because he needs to launch smbpasswd as root
+user. A very simple php web interface that talks with the daemon. this interface
+implements a catpcha system. 
+
+The project is very embryonic, i wrote it to satisfy my personal needs.
+I suggest to do a chmod 700 of the daemon.
+
+
+file:
+
+COLLEGE.ttf = font file for captcha.php class
+
+captcha.php = Does emit a CAPTCHA graphic and form fields, which allows to 
+              tell real people from bots.
+	      
+changesmbpasswd[.c] = C server socket daemon
+
+index.php = PHP web page
+
+Makefile = makefile for compiling .c server
+
+tmp = temporary directory that contains captcha tempdata and server unix socket
